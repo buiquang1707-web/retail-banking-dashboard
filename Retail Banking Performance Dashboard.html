@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Retail Banking Performance Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eceff4;--card:#fff;--tx:#14213d;--mu:#5d6b82;--bd:#dde3ec;--chip:#e8eefc;--c1:#1d4ed8;--c2:#0f9d8a;--c3:#e8a317;--c4:#7c5cd6;--c5:#d6537a;--ok:#12906a;--bad:#d93f3f;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1420;--card:#16202f;--tx:#e8edf5;--mu:#97a5bb;--bd:#26344a;--chip:#1f2e4d;--c1:#6b95ff;--c2:#35c9b4;--c3:#f2b84b;--c4:#a58cf0;--c5:#f27ba0;--ok:#3fcf9f;--bad:#ff7070;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1420;--card:#16202f;--tx:#e8edf5;--mu:#97a5bb;--bd:#26344a;--chip:#1f2e4d;--c1:#6b95ff;--c2:#35c9b4;--c3:#f2b84b;--c4:#a58cf0;--c5:#f27ba0;--ok:#3fcf9f;--bad:#ff7070;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums}
+main{max-width:1180px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:26px;margin:0 0 4px;font-weight:700;letter-spacing:-.01em}
+h2{font-size:17px;margin:0 0 12px;font-weight:600}
+h3{font-size:15px;margin:0 0 6px;font-weight:600}
+.sub{color:var(--mu);margin:0 0 16px;max-width:75ch}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px}
+#sl{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-end;margin-bottom:16px}
+.g label{display:block;font-size:13px;color:var(--mu);margin-bottom:5px}
+.chip{font:inherit;font-size:13px;padding:5px 11px;margin:0 6px 6px 0;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;cursor:pointer}
+.chip.on{background:var(--c1);border-color:var(--c1);color:#fff}
+.chip:focus-visible{outline:2px solid var(--c1);outline-offset:2px}
+.chip.rs{border-style:dashed;color:var(--mu)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:12px;margin-bottom:14px}
+.kpi small{display:block;color:var(--mu);font-size:12.5px}
+.kpi b{display:block;font-size:28px;line-height:1.2;margin:2px 0;font-weight:700}
+.kpi.main b{color:var(--c1)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:14px;margin-bottom:14px}
+.cols{display:flex;gap:12px;align-items:flex-end;height:230px}
+.col{flex:1;text-align:center;font-size:12.5px;color:var(--mu)}
+.plot{height:190px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.plot .v{color:var(--tx);font-weight:600;font-size:13px;margin-bottom:3px}
+.bar{width:100%;background:var(--c1);border-radius:5px 5px 0 0;min-height:2px}
+.col:first-child .bar{background:var(--c3)}
+.pie{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.donut{width:150px;height:150px;border-radius:50%;position:relative;flex:none}
+.donut::after{content:"";position:absolute;inset:34px;border-radius:50%;background:var(--card)}
+.pie ul{list-style:none;margin:0;padding:0;flex:1;min-width:180px}
+.pie li{display:flex;align-items:center;gap:8px;padding:3px 0}
+.pie li i{width:11px;height:11px;border-radius:3px;flex:none}
+.pie li b{margin-left:auto}.pie li small{color:var(--mu);width:62px;text-align:right}
+.hb{display:grid;grid-template-columns:88px 1fr 40px;gap:10px;align-items:center;margin:9px 0}
+.tr{background:var(--bg);border-radius:5px;height:20px;overflow:hidden}.tr div{height:100%;border-radius:5px}
+.hb b{text-align:right}
+svg{width:100%;height:auto;display:block}svg text{fill:var(--mu);font-size:11px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:520px}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--bd);white-space:nowrap}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+th{color:var(--mu);font-weight:500;font-size:13px}
+.qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+.qa p,.ins p{margin:0;color:var(--mu)}.qa p b,.ins p b{color:var(--tx)}
+.ins{display:grid;gap:12px;margin-top:12px}
+.ins .card{border-left:4px solid var(--c3)}
+.note{color:var(--mu);font-size:13px;margin-top:6px}
+@media (prefers-reduced-motion:no-preference){.bar,.tr div{transition:height .25s,width .25s}}
+</style></head><body><main>
+<h1>Retail Banking Performance Dashboard</h1>
+<p class="sub">Theo dõi hoạt động cho vay của 5 chi nhánh, 01/2023 đến 12/2024. Bấm vào các bộ lọc bên dưới để thay đổi toàn bộ trang, giống slicer trong Power BI. Dữ liệu là dữ liệu giả lập, dùng để minh họa.</p>
+<div id="sl"></div>
+
+<section class="kpis">
+<div class="card kpi"><small>Total Customers</small><b id="k1"></b><small>Không đổi theo bộ lọc</small></div>
+<div class="card kpi"><small>Total Loans</small><b id="k2"></b><small>Số khoản vay</small></div>
+<div class="card kpi main"><small>Total Loan Amount</small><b id="k3"></b><small>Tổng giá trị giải ngân</small></div>
+<div class="card kpi"><small>Average Loan Amount</small><b id="k4"></b><small>Trung bình mỗi khoản</small></div>
+<div class="card kpi"><small>Borrowers</small><b id="k5"></b><small>Khách đang có vay, đổi theo lọc</small></div>
+<div class="card kpi"><small>Overdue Rate</small><b id="k6"></b><small>Tỷ lệ khoản vay quá hạn</small></div>
+</section>
+
+<section class="grid">
+<div class="card"><h2>Tổng giá trị khoản vay theo chi nhánh (tỷ VND)</h2><div class="cols" id="col"></div></div>
+<div class="card"><h2>Tỷ trọng giá trị khoản vay theo loại</h2><div class="pie"><div class="donut" id="donut"></div><ul id="leg"></ul></div></div>
+<div class="card"><h2>Số lượng khoản vay theo trạng thái</h2><div id="st"></div></div>
+<div class="card"><h2>Xu hướng giá trị khoản vay theo tháng (tỷ VND)</h2><div id="line"></div></div>
+</section>
+
+<section class="grid">
+<div class="card"><h2>Chi tiết theo chi nhánh</h2><div class="tw"><table><thead><tr><th>Chi nhánh</th><th>Khu vực</th><th>Số khoản</th><th>Giá trị (tỷ)</th><th>TB (triệu)</th><th>Quá hạn theo giá trị</th></tr></thead><tbody id="tb"></tbody></table></div></div>
+<div class="card"><h2>Khách hàng theo khu vực</h2><div id="rg"></div><p class="note">Biểu đồ này lấy từ bảng Customers nên không đổi theo bộ lọc.</p></div>
+</section>
+
+<h2>Business Insights</h2>
+<section class="qa">
+<div class="card"><h3>1. Chi nhánh có tổng giá trị cao nhất?</h3><p><b>CN Quận 1</b> với 63,5 tỷ (26,5%), tiếp theo là Ninh Kiều 54,3 tỷ. Hai chi nhánh Miền Nam chiếm 49,2% tổng giá trị.</p></div>
+<div class="card"><h3>2. Loại khoản vay phổ biến nhất?</h3><p>Theo số lượng: <b>Personal</b> (178 khoản, 35,6%). Theo giá trị: <b>Business</b> (90,1 tỷ, 37,7%).</p></div>
+<div class="card"><h3>3. Khu vực nhiều khách nhất?</h3><p><b>Miền Nam</b> với 150 khách, đúng 50% tổng số 300 khách hàng.</p></div>
+<div class="card"><h3>4. Tình hình theo trạng thái?</h3><p>Active <b>65,2%</b>, Completed <b>23,2%</b>, Overdue <b>11,6%</b> số khoản. Theo giá trị, Overdue là 9,3% (22,3 tỷ).</p></div>
+</section>
+<section class="ins">
+<div class="card"><h3>Nhận xét 1: Quận 1 dẫn đầu quy mô, chưa chắc hiệu quả nhất</h3><p>Quận 1 có nhiều khoản vay nhất (126) và giá trị trung bình khá cao (khoảng 504 triệu). Tuy vậy tỷ lệ quá hạn theo giá trị của chi nhánh này là 11,3%, cao thứ hai sau Cầu Giấy (13,3%), trong khi Ninh Kiều (6,5%) và Hải Châu (6,8%) có chất lượng tốt hơn. Cần thêm dữ liệu chi phí, lợi nhuận và dự phòng rủi ro mới kết luận được.</p></div>
+<div class="card"><h3>Nhận xét 2: Số lượng và giá trị kể hai câu chuyện khác nhau</h3><p>Personal và Education chiếm 55,0% số khoản nhưng chỉ 11,1% giá trị. Business và Mortgage chỉ có 30,6% số khoản nhưng chiếm 71,2% giá trị. Nhóm khoản vay từ 1 tỷ trở lên có 76 khoản nhưng chiếm tới 53,2% tổng giá trị, nên danh mục phụ thuộc nhiều vào một số ít khoản vay lớn.</p></div>
+<div class="card"><h3>Nhận xét 3: Education rủi ro cao nhưng lãi suất thấp nhất</h3><p>Education có 15,5% khoản vay quá hạn (18,0% theo giá trị) nhưng lãi suất trung bình chỉ 7,51%. Nhóm này chỉ chiếm 4,6% giá trị nên tác động toàn danh mục còn nhỏ. Về thời gian, giá trị năm 2024 là 123,7 tỷ so với 115,4 tỷ của 2023 (tăng 7,2%) với cùng 250 khoản mỗi năm, nghĩa là mức tăng đến từ giá trị mỗi khoản. Giá trị theo tháng dao động mạnh nên chưa thấy xu hướng rõ.</p></div>
+</section>
+<p class="note">Giới hạn: dữ liệu giả lập, chưa có doanh thu, chi phí hay số ngày quá hạn, nên chưa đánh giá được lợi nhuận hay tỷ lệ nợ xấu (NPL) theo chuẩn ngân hàng.</p>
+</main>
+<script>
+const D={"br":[["CN Hoàn Kiếm","Miền Bắc"],["CN Cầu Giấy","Miền Bắc"],["CN Hải Châu","Miền Trung"],["CN Quận 1","Miền Nam"],["CN Ninh Kiều","Miền Nam"]],"ty":["Personal","Mortgage","Auto","Business","Education"],"st":["Active","Completed","Overdue"],"mo":["01/23","02/23","03/23","04/23","05/23","06/23","07/23","08/23","09/23","10/23","11/23","12/23","01/24","02/24","03/24","04/24","05/24","06/24","07/24","08/24","09/24","10/24","11/24","12/24"],"loans":[[51,3,3,1160,0,0],[8,2,3,1490,0,0],[139,2,0,66,0,1],[77,3,3,678,0,0],[98,1,0,81,0,0],[193,0,1,1708,0,1],[209,2,0,51,0,0],[185,2,3,539,0,0],[210,4,1,1800,0,0],[268,1,0,92,0,0],[22,0,3,1397,0,1],[175,1,0,107,0,2],[208,2,0,82,1,0],[94,4,1,926,1,1],[202,1,2,794,1,0],[244,0,0,60,1,1],[19,3,0,71,1,1],[10,1,3,1483,1,2],[248,4,3,1177,1,2],[242,0,0,30,1,2],[270,4,0,64,1,1],[38,2,0,54,1,2],[287,4,0,135,1,1],[58,4,3,577,1,1],[98,0,0,92,1,2],[163,0,0,54,1,1],[145,4,1,1065,1,0],[80,1,3,1438,1,1],[300,3,0,120,1,0],[83,2,0,76,1,1],[127,3,2,405,1,0],[254,1,2,562,1,1],[76,2,2,709,1,0],[96,2,0,118,1,0],[242,0,1,2653,1,0],[99,2,0,113,1,1],[1,2,4,131,1,0],[281,0,0,58,2,2],[235,4,0,52,2,1],[174,3,0,60,2,0],[29,0,0,32,2,0],[60,2,2,424,2,0],[224,3,3,166,2,1],[201,1,0,30,2,1],[52,3,1,2085,2,1],[48,0,0,138,2,1],[117,3,1,2323,2,1],[257,2,4,56,2,0],[294,3,0,93,2,2],[66,4,4,175,2,0],[36,1,3,831,2,0],[140,0,3,1329,2,0],[104,3,0,79,2,0],[213,3,3,1210,3,0],[174,3,1,1946,3,0],[19,4,3,805,3,2],[245,1,2,716,3,2],[56,1,0,148,3,0],[117,4,0,136,3,2],[170,3,0,38,3,1],[286,3,0,34,3,1],[105,4,3,1410,3,0],[97,2,4,119,3,0],[101,0,3,576,3,2],[63,3,4,142,3,2],[255,2,0,135,3,0],[287,0,4,156,3,0],[207,2,2,855,3,0],[35,4,0,55,3,0],[159,1,1,2484,3,1],[276,1,0,54,3,1],[291,4,2,592,3,0],[53,1,2,545,4,2],[242,0,2,447,4,2],[220,1,4,55,4,1],[22,1,4,149,4,0],[225,3,4,174,4,0],[204,0,0,109,4,2],[296,1,0,139,4,2],[287,3,0,119,4,0],[122,3,0,56,4,0],[198,3,3,1374,4,0],[234,3,3,234,4,0],[189,4,0,35,4,1],[22,1,3,1220,4,1],[289,4,0,86,4,0],[159,1,0,36,4,2],[17,4,1,2849,4,1],[55,4,1,1218,4,0],[60,2,4,161,4,0],[77,4,1,848,4,1],[33,1,1,2154,4,1],[166,1,4,187,4,0],[7,4,4,111,4,0],[237,4,4,184,4,2],[99,4,3,711,4,1],[91,3,1,2197,4,2],[198,2,0,110,4,0],[127,2,1,2838,5,0],[275,0,2,628,5,1],[61,4,4,51,5,0],[124,1,0,26,5,0],[125,1,1,1164,5,0],[245,4,4,146,5,1],[159,0,0,110,5,0],[291,3,2,558,5,1],[82,4,0,145,5,0],[191,3,4,192,5,1],[200,3,0,106,5,0],[210,4,0,48,5,0],[198,4,0,117,5,2],[250,3,4,38,5,0],[191,3,3,418,5,0],[281,0,0,139,5,0],[167,4,4,129,5,1],[87,2,4,162,5,2],[20,4,2,435,5,1],[164,3,3,526,5,1],[117,4,3,125,5,0],[120,2,3,1044,5,1],[120,3,0,35,5,0],[30,3,1,776,5,0],[18,3,0,62,5,0],[220,3,4,47,5,0],[81,4,0,124,5,2],[109,1,4,58,5,0],[65,2,0,109,5,0],[155,2,0,88,6,1],[180,2,4,101,6,0],[256,1,3,569,6,0],[171,2,0,143,6,0],[93,0,2,518,6,1],[278,0,0,100,6,0],[23,3,3,561,6,0],[13,4,0,48,6,0],[126,4,0,55,6,1],[267,3,3,859,6,0],[214,4,4,120,6,2],[145,3,3,466,6,0],[82,3,0,149,6,1],[213,4,0,27,6,1],[289,4,2,614,6,1],[62,1,2,406,6,1],[51,4,0,115,6,0],[236,4,2,816,6,0],[212,4,4,148,6,0],[55,4,3,435,6,1],[134,2,0,56,6,0],[123,4,0,103,7,1],[54,3,4,113,7,0],[107,0,4,87,7,1],[240,2,0,89,7,0],[18,4,4,72,7,1],[193,1,0,56,7,0],[41,3,4,183,7,0],[282,2,4,87,7,0],[177,3,0,41,7,1],[180,2,3,1183,7,0],[114,1,4,83,7,0],[59,3,3,467,7,2],[51,4,2,374,7,0],[208,2,1,1931,7,1],[56,1,3,1173,7,1],[284,0,0,135,7,1],[227,3,4,75,7,0],[61,4,3,1385,7,0],[172,0,3,136,7,0],[53,0,0,143,7,2],[26,1,3,1380,7,0],[50,1,0,150,7,0],[236,4,3,109,7,2],[249,3,0,100,7,0],[177,4,3,265,7,0],[160,4,0,76,8,2],[172,0,4,174,8,0],[44,1,1,2895,8,2],[272,3,2,484,8,0],[69,4,0,127,8,1],[64,2,2,779,8,1],[14,4,0,137,8,1],[81,3,3,1014,8,0],[248,4,3,602,8,1],[279,3,0,133,8,1],[39,4,2,398,8,0],[25,1,3,686,8,0],[260,0,1,1296,8,0],[128,2,0,61,8,1],[163,2,3,851,8,0],[66,4,0,87,8,0],[47,3,0,23,8,0],[216,2,3,527,8,1],[265,0,1,2560,8,1],[16,2,0,67,8,0],[233,4,0,92,9,2],[52,4,0,123,9,1],[180,2,4,177,9,2],[167,4,0,43,9,1],[261,1,2,739,9,1],[149,0,4,171,9,0],[119,4,0,113,9,2],[167,3,0,76,9,0],[122,3,2,428,9,1],[245,3,0,134,9,1],[259,0,0,58,9,2],[290,1,2,328,9,0],[8,2,0,110,9,0],[200,3,3,824,10,0],[138,0,4,38,10,0],[120,3,3,1216,10,0],[149,0,0,126,10,0],[91,1,0,23,10,1],[265,1,4,98,10,0],[136,1,1,1797,10,1],[46,1,4,96,10,1],[59,4,3,350,10,1],[57,2,4,75,10,0],[242,1,3,1124,10,0],[86,1,3,106,10,0],[10,0,4,139,10,0],[244,1,3,227,10,0],[268,0,0,27,10,0],[174,3,2,423,10,0],[270,3,4,93,10,1],[185,2,3,1194,10,0],[300,4,0,150,10,1],[20,4,4,114,10,1],[176,0,2,605,10,0],[100,4,0,61,11,0],[286,4,0,104,11,2],[213,0,0,144,11,0],[216,2,0,140,11,0],[85,0,3,125,11,0],[293,3,0,99,11,0],[256,0,3,1176,11,1],[185,2,3,117,11,0],[267,3,4,84,11,0],[29,0,2,799,11,1],[239,4,4,48,11,0],[176,0,0,108,11,0],[54,3,2,494,11,0],[18,3,0,89,11,0],[98,1,2,623,11,0],[39,4,2,490,11,0],[73,3,2,678,11,2],[67,1,3,1327,11,0],[271,0,0,29,11,0],[207,2,4,102,11,0],[168,2,0,120,11,0],[251,0,4,65,11,0],[14,4,0,86,11,0],[182,0,0,48,12,0],[166,1,4,151,12,0],[127,4,1,1916,12,0],[207,2,2,402,12,1],[37,3,0,139,12,0],[84,1,3,240,12,1],[128,2,0,22,12,1],[143,1,3,250,12,1],[211,4,4,187,12,2],[26,0,1,2820,12,1],[29,1,0,103,12,0],[286,4,4,91,12,2],[207,1,2,743,12,0],[221,0,4,87,12,2],[296,1,0,57,12,0],[199,0,2,611,12,0],[123,3,0,103,12,2],[53,0,1,2877,12,1],[263,1,0,41,12,1],[113,4,0,132,12,0],[59,3,0,102,12,0],[82,3,4,59,12,1],[23,3,4,169,12,0],[166,0,4,159,13,0],[281,0,3,417,13,0],[284,1,4,163,13,2],[148,2,0,117,13,0],[36,0,3,1243,13,0],[268,0,3,865,13,1],[283,4,4,50,13,0],[156,4,3,955,13,1],[279,4,3,1161,13,0],[106,2,0,118,13,0],[105,3,4,164,13,0],[211,3,3,420,13,0],[54,4,2,808,13,0],[256,1,4,51,13,0],[111,3,4,89,13,1],[157,1,3,963,13,0],[167,4,3,1146,13,0],[29,0,4,52,13,2],[195,3,2,787,13,2],[283,4,1,718,13,1],[195,2,2,520,13,0],[77,2,4,179,13,2],[114,3,3,865,13,2],[14,3,2,858,13,1],[254,0,0,129,13,0],[300,3,0,24,13,2],[174,4,0,60,14,1],[285,4,2,376,14,0],[80,0,3,209,14,0],[140,0,3,566,14,0],[124,1,2,540,14,0],[50,4,0,108,14,0],[220,2,1,759,14,0],[113,0,2,329,14,1],[49,3,1,2572,14,0],[17,4,2,430,14,0],[281,1,3,150,14,1],[183,4,0,66,14,0],[69,3,0,146,14,0],[153,4,0,60,14,1],[235,4,4,146,14,1],[143,3,2,544,14,0],[151,4,0,62,15,0],[41,4,4,104,15,2],[259,4,3,1458,15,1],[45,1,3,503,15,0],[52,3,3,391,15,2],[37,1,3,852,15,1],[83,2,2,695,15,0],[4,2,3,607,15,2],[158,4,4,169,15,0],[200,3,3,1272,15,0],[144,1,3,831,15,1],[59,3,0,84,15,0],[231,4,4,99,15,1],[49,3,3,1244,15,0],[148,2,4,114,15,1],[86,0,1,2129,15,0],[79,4,2,690,15,0],[37,0,3,200,15,1],[220,3,0,111,15,2],[122,4,4,145,15,0],[247,2,3,1489,15,1],[271,0,4,145,15,1],[294,3,0,81,15,0],[7,4,0,119,15,1],[221,1,3,1404,15,1],[62,3,2,630,16,2],[206,4,1,2971,16,0],[255,2,0,44,16,2],[159,0,0,111,16,1],[5,4,0,22,16,0],[300,3,0,88,16,1],[236,3,3,432,16,1],[211,3,3,1219,16,0],[97,4,1,1908,16,1],[272,3,0,146,16,0],[166,1,4,52,16,0],[139,2,0,117,16,1],[146,4,3,432,16,0],[187,3,4,131,16,1],[193,1,0,142,16,0],[138,2,4,83,16,0],[230,0,3,1302,17,1],[47,0,3,811,17,0],[63,4,0,80,17,0],[289,1,4,148,17,2],[55,4,3,856,17,0],[46,1,3,1283,17,0],[87,2,3,416,17,0],[153,4,4,143,17,0],[101,1,0,40,17,0],[135,1,4,73,17,0],[152,4,2,460,17,0],[152,4,0,144,17,1],[84,0,4,187,17,0],[260,0,0,71,17,0],[96,2,0,109,17,1],[79,2,0,25,17,0],[240,2,4,47,17,0],[114,3,3,245,17,0],[142,3,1,2593,17,1],[176,0,4,66,17,2],[225,0,0,148,17,0],[52,3,1,1597,18,0],[221,0,0,74,18,1],[91,1,0,120,18,0],[147,1,4,88,18,1],[300,3,3,769,18,0],[214,1,0,97,18,0],[80,0,3,1011,18,0],[41,3,0,35,18,0],[192,3,0,40,18,0],[180,2,0,50,18,0],[38,2,2,871,18,0],[135,0,2,504,18,0],[242,0,3,734,18,0],[217,3,3,1306,18,0],[202,2,0,149,18,0],[268,1,3,279,18,0],[265,1,3,1425,18,0],[282,2,3,1312,18,0],[105,3,2,472,18,0],[64,2,4,65,18,0],[102,1,2,820,18,0],[87,1,0,112,18,0],[27,4,1,2811,19,0],[233,3,0,32,19,0],[189,4,0,110,19,0],[146,3,3,770,19,0],[156,1,0,22,19,0],[154,4,1,1810,19,0],[75,2,0,58,19,0],[245,4,2,594,19,0],[281,1,4,55,19,0],[233,3,0,78,19,0],[14,3,4,77,19,0],[213,4,2,758,19,0],[219,0,4,56,19,0],[157,1,0,80,19,0],[119,3,2,741,20,0],[98,0,3,701,20,0],[291,3,3,1109,20,0],[12,4,4,64,20,0],[258,3,1,2449,20,0],[163,2,2,605,20,0],[230,0,3,884,20,0],[134,2,3,1074,20,0],[101,0,4,167,20,0],[91,2,2,604,20,0],[209,2,4,54,20,0],[20,3,1,2940,20,0],[79,3,3,456,20,0],[121,1,3,227,20,0],[219,1,0,95,20,0],[166,2,4,160,20,0],[272,3,4,186,20,0],[185,2,2,876,20,2],[277,3,4,133,20,2],[69,3,0,125,20,0],[226,4,0,118,21,0],[156,3,4,51,21,0],[39,0,0,33,21,0],[283,3,4,54,21,0],[51,3,2,305,21,0],[253,3,0,131,21,0],[260,1,0,91,21,0],[61,1,2,855,21,0],[131,1,2,421,21,0],[282,2,0,83,21,0],[114,4,4,189,21,0],[220,0,2,593,21,2],[99,4,1,790,21,0],[75,1,0,128,21,0],[111,3,2,368,21,0],[49,3,2,798,21,0],[76,2,0,25,21,0],[287,0,0,97,21,0],[145,4,0,75,21,0],[236,4,0,82,21,0],[237,3,2,703,21,0],[215,3,2,630,22,0],[60,2,4,150,22,0],[66,3,0,128,22,0],[223,0,1,1861,22,0],[212,4,3,1172,22,0],[170,3,4,121,22,0],[134,2,4,80,22,0],[220,0,0,118,22,0],[49,4,3,959,22,0],[180,2,4,103,22,0],[290,1,2,458,22,0],[30,3,4,182,22,0],[187,3,2,623,22,0],[187,4,0,149,22,0],[170,4,2,695,22,0],[31,0,4,174,22,0],[248,3,3,873,22,0],[76,2,0,112,22,0],[272,4,3,1260,22,0],[269,3,0,146,22,0],[296,1,3,723,22,0],[238,1,0,56,22,0],[245,3,1,759,22,0],[257,0,0,144,22,0],[25,0,0,38,23,0],[61,4,4,110,23,0],[124,0,0,128,23,0],[62,3,0,97,23,0],[123,3,0,72,23,0],[119,4,0,38,23,0],[118,0,2,411,23,0],[225,1,4,89,23,0],[40,2,3,1012,23,0],[176,1,3,418,23,0],[276,0,0,129,23,0],[299,3,2,524,23,2],[265,0,0,34,23,0],[125,0,3,971,23,2],[219,1,3,129,23,0],[123,1,1,2197,23,0],[95,3,3,491,23,0],[6,1,2,531,23,0],[177,3,0,84,23,0],[289,4,0,30,23,0],[178,0,3,947,23,0],[234,3,2,476,23,0]]};
+const S={region:new Set(),type:new Set(),status:new Set()};
+const $=id=>document.getElementById(id);
+const C=['var(--c1)','var(--c2)','var(--c3)','var(--c4)','var(--c5)'],SC=['var(--c1)','var(--ok)','var(--bad)'];
+const G=[['Region (chi nhánh)','region',['Miền Bắc','Miền Trung','Miền Nam']],['Loan Type','type',D.ty],['Loan Status','status',D.st]];
+$('sl').innerHTML=G.map(g=>`<div class="g"><label>${g[0]}</label><div>${g[2].map(v=>`<button class="chip" data-k="${g[1]}" data-v="${v}">${v}</button>`).join('')}</div></div>`).join('')+'<div class="g"><button class="chip rs" id="rs">Xóa bộ lọc</button></div>';
+$('sl').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.id==='rs')Object.values(S).forEach(s=>s.clear());else{const s=S[b.dataset.k];s.has(b.dataset.v)?s.delete(b.dataset.v):s.add(b.dataset.v)}render()};
+const B=v=>(v/1000).toFixed(1);
+function hb(rows,mx,colors){return rows.map((r,i)=>`<div class="hb"><span>${r[0]}</span><div class="tr"><div style="width:${r[1]/mx*100}%;background:${colors[i]}"></div></div><b>${r[1]}</b></div>`).join('')}
+$('rg').innerHTML=hb([['Miền Nam',150],['Miền Bắc',98],['Miền Trung',52]],150,['var(--c1)','var(--c2)','var(--c3)']);
+function render(){
+document.querySelectorAll('.chip[data-k]').forEach(b=>b.classList.toggle('on',S[b.dataset.k].has(b.dataset.v)));
+const L=D.loans.filter(l=>(!S.region.size||S.region.has(D.br[l[1]][1]))&&(!S.type.size||S.type.has(D.ty[l[2]]))&&(!S.status.size||S.status.has(D.st[l[5]])));
+const n=L.length,tot=L.reduce((a,l)=>a+l[3],0),od=L.filter(l=>l[5]===2).length;
+$('k1').textContent=300;$('k2').textContent=n;$('k3').textContent=B(tot)+' tỷ';
+$('k4').textContent=(n?Math.round(tot/n):0)+' triệu';$('k5').textContent=new Set(L.map(l=>l[0])).size;
+$('k6').textContent=(n?od/n*100:0).toFixed(1)+'%';
+const bm={};L.forEach(l=>bm[l[1]]=(bm[l[1]]||0)+l[3]);
+const rows=D.br.map((b,i)=>[b[0].replace('CN ',''),bm[i]||0]).sort((a,b)=>b[1]-a[1]);
+const mx=Math.max(1,...rows.map(r=>r[1]));
+$('col').innerHTML=rows.map(r=>`<div class="col"><div class="plot"><span class="v">${B(r[1])}</span><div class="bar" style="height:${r[1]/mx*82}%"></div></div>${r[0]}</div>`).join('');
+const tm={};L.forEach(l=>tm[l[2]]=(tm[l[2]]||0)+l[3]);const tt=tot||1;let acc=0;
+const stops=D.ty.map((t,i)=>{const p=(tm[i]||0)/tt*100,s=`${C[i]} ${acc}% ${acc+p}%`;acc+=p;return s}).join(',');
+$('donut').style.background=n?`conic-gradient(${stops})`:'var(--bd)';
+$('leg').innerHTML=D.ty.map((t,i)=>`<li><i style="background:${C[i]}"></i>${t}<b>${((tm[i]||0)/tt*100).toFixed(1)}%</b><small>${B(tm[i]||0)} tỷ</small></li>`).join('');
+const sc=[0,0,0];L.forEach(l=>sc[l[5]]++);
+$('st').innerHTML=hb(D.st.map((s,i)=>[s,sc[i]]),Math.max(1,...sc),SC);
+const mm=new Array(D.mo.length).fill(0);L.forEach(l=>mm[l[4]]+=l[3]);
+const W=600,H=220,p=34,ml=Math.max(1,...mm),X=i=>p+i*(W-2*p)/(mm.length-1),Y=v=>H-p-v/ml*(H-2*p);
+const pts=mm.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ');
+const grid=[0,.5,1].map(f=>`<line x1="${p}" x2="${W-p}" y1="${Y(ml*f)}" y2="${Y(ml*f)}" stroke="var(--bd)"/><text x="${p-5}" y="${Y(ml*f)+4}" text-anchor="end">${(ml*f/1000).toFixed(0)}</text>`).join('');
+const lab=D.mo.map((m,i)=>i%3===0?`<text x="${X(i)}" y="${H-10}" text-anchor="middle">${m}</text>`:'').join('');
+$('line').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Giá trị khoản vay theo tháng">${grid}${lab}<polygon points="${p},${H-p} ${pts} ${W-p},${H-p}" fill="var(--c1)" opacity=".13"/><polyline points="${pts}" fill="none" stroke="var(--c1)" stroke-width="2.5" stroke-linejoin="round"/>${mm.map((v,i)=>`<circle cx="${X(i)}" cy="${Y(v)}" r="3.5" fill="var(--c1)"><title>${D.mo[i]}: ${(v/1000).toFixed(2)} tỷ</title></circle>`).join('')}</svg>`;
+$('tb').innerHTML=D.br.map((b,i)=>{const x=L.filter(l=>l[1]===i),s=x.reduce((a,l)=>a+l[3],0),o=x.filter(l=>l[5]===2).reduce((a,l)=>a+l[3],0);return `<tr><td>${b[0]}</td><td>${b[1]}</td><td>${x.length}</td><td>${B(s)}</td><td>${x.length?Math.round(s/x.length):0}</td><td>${s?(o/s*100).toFixed(1):'0.0'}%</td></tr>`}).join('');
+}
+render();
+</script></body></html>
